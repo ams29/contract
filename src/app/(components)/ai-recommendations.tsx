@@ -6,11 +6,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from "lucide-react";
 
-export function AIRecommendations({ contractData }) {
+interface ContractData {
+  services: {
+    currentDiscount: number;
+  }[];
+  totalSpend: number;
+}
+
+export function AIRecommendations({ contractData }: { contractData: ContractData }) {
   const recommendations = [
     {
       title: "Optimize Ground Service Rates",
-      description: `Based on your current Ground service discounts of ${contractData.services[0].currentDiscount} for 1-5 lbs and ${contractData.services[1].currentDiscount} for 6-10 lbs, we recommend pushing for a 16-20% discount across all weight ranges. Our analysis of companies with similar shipping volumes ($${(contractData.totalSpend / 1000000).toFixed(2)} million annually) shows that top performers have secured discounts in this range. Emphasize your consistent shipping volume and long-term partnership potential to justify this increase.`,
+      description: `Based on your current Ground service discounts of ${contractData.services[0].currentDiscount}% for 1-5 lbs and ${contractData.services[1].currentDiscount}% for 6-10 lbs, we recommend pushing for a 16-20% discount across all weight ranges. Our analysis of companies with similar shipping volumes ($${(contractData.totalSpend / 1000000).toFixed(2)} million annually) shows that top performers have secured discounts in this range. Emphasize your consistent shipping volume and long-term partnership potential to justify this increase.`,
       competitorInfo:
         "FedEx is currently offering a 18% discount on Ground services for similar shipping profiles. Use this as leverage in your UPS negotiations.",
       potentialSavings: `Potential annual savings: $${((0.18 - 0.11) * contractData.totalSpend * 0.4).toLocaleString()} (assuming 40% of your spend is on Ground services)`,
