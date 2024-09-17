@@ -18,7 +18,9 @@ import {
 } from "lucide-react";
 
 interface ProgressTrackerProps {
-  contractData: any;
+  contractData: {
+    [key: string]: any;
+  };
 }
 
 export function ProgressTracker({ contractData }: ProgressTrackerProps) {

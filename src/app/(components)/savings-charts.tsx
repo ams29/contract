@@ -31,14 +31,26 @@ const COLORS = [
 ];
 
 interface AnimatedData {
-  discountComparison: any[];
-  competitorComparison: any[];
-  potentialSavings: any[];
-  serviceBreakdown: any[];
-  historicalRates: any[];
+  discountComparison: Array<Record<string, string | number>>;
+  competitorComparison: Array<Record<string, string | number>>;
+  potentialSavings: Array<Record<string, string | number>>;
+  serviceBreakdown: Array<Record<string, string | number>>;
+  historicalRates: Array<Record<string, string | number>>;
 }
 
-export function SavingsCharts({ contractData }: { contractData: any }) {
+interface SavingsChartsProps {
+  contractData: {
+    carrier: string;
+    totalSpend: number;
+    services: Array<{
+      type: string;
+      weightRange: string;
+      currentDiscount: string;
+    }>;
+  };
+}
+
+export function SavingsCharts({ contractData }: SavingsChartsProps) {
   const [activeTab, setActiveTab] = useState("discount");
   const [animatedData, setAnimatedData] = useState<AnimatedData>({
     discountComparison: [],

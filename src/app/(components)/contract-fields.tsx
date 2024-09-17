@@ -17,14 +17,18 @@ import { PlusCircle, MinusCircle, DollarSign, Percent } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface ContractData {
-  carrier: string | number | readonly string[] | undefined;
+  carrier: string;
   totalSpend: number;
-  services: any[];
+  services: Array<{
+    type: string;
+    weightRange: string;
+    currentDiscount: string;
+  }>;
 }
 
 interface ContractFieldsProps {
   contractData: ContractData;
-  onFieldChange: (field: string, value: any) => void;
+  onFieldChange: (field: string, value: string | number | Array<any>) => void;
 }
 
 export function ContractFields({ contractData, onFieldChange }: ContractFieldsProps) {
@@ -34,7 +38,7 @@ export function ContractFields({ contractData, onFieldChange }: ContractFieldsPr
     const newTotalSpend = calculateTotalSpend();
     setTotalSpend(newTotalSpend);
     onFieldChange("totalSpend", newTotalSpend);
-  }, [contractData.services]);
+  }, [contractData.services, onFieldChange]);
 
   const fieldAnimation = {
     hidden: { opacity: 0, y: 20 },
@@ -64,7 +68,7 @@ export function ContractFields({ contractData, onFieldChange }: ContractFieldsPr
     onFieldChange("services", newServices);
   };
 
-  const handleServiceChange = (index: number, field: string, value: string) => {
+  const handleServiceChange = (index: number, field: keyof typeof contractData.services[0], value: string) => {
     const newServices = [...contractData.services];
     newServices[index][field] = value;
     onFieldChange("services", newServices);
