@@ -14,10 +14,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PlusCircle, MinusCircle, DollarSign, Percent } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
-export function ContractFields({ contractData, onFieldChange }) {
-  const [totalSpend, setTotalSpend] = useState(contractData.totalSpend);
+interface ContractData {
+  carrier: string | number | readonly string[] | undefined;
+  totalSpend: number;
+  services: any[];
+}
+
+interface ContractFieldsProps {
+  contractData: ContractData;
+  onFieldChange: (field: string, value: any) => void;
+}
+
+export function ContractFields({ contractData, onFieldChange }: ContractFieldsProps) {
+  const [totalSpend, setTotalSpend] = useState<number>(contractData.totalSpend);
 
   useEffect(() => {
     const newTotalSpend = calculateTotalSpend();
@@ -48,12 +59,12 @@ export function ContractFields({ contractData, onFieldChange }) {
     onFieldChange("services", newServices);
   };
 
-  const handleRemoveService = (index) => {
+  const handleRemoveService = (index: number) => {
     const newServices = contractData.services.filter((_, i) => i !== index);
     onFieldChange("services", newServices);
   };
 
-  const handleServiceChange = (index, field, value) => {
+  const handleServiceChange = (index: number, field: string, value: string) => {
     const newServices = [...contractData.services];
     newServices[index][field] = value;
     onFieldChange("services", newServices);

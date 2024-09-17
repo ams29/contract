@@ -6,50 +6,52 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadIcon } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 
-export function FileUpload({ onUpload }) {
-  const [file, setFile] = useState(null);
-  const [contractContext, setContractContext] = useState("");
+export function FileUpload({ onUpload }: { onUpload: (file: File) => void }) {
+  const [file, setFile] = useState<File | null>(null);
+  const [contractContext, setContractContext] = useState<string>("");
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
     setFile(acceptedFiles[0]);
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false,
+    onDragEnter: () => {},
+    onDragOver: () => {},
+    onDragLeave: () => {},
+  });
 
   const handleUpload = () => {
     if (file) {
-      onUpload({
-        fileName: file.name,
-        size: file.size,
-        context: contractContext,
-      });
+      onUpload(file);
     }
   };
 
   return (
-    <div className="space-y-4 p-6 bg-[#2A2D3A] rounded-xl">
+    <div className="space-y-4 p-6 bg-gray-800 rounded-xl">
       <h2 className="text-2xl font-bold text-white">
         Upload Contract Data
       </h2>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-gray-300">
         Upload your Excel file containing contract details and parcel level data
         (PLD) to begin the AI-powered analysis.
       </p>
       <div
         {...getRootProps()}
-        className={`flex items-center justify-center w-full h-32 px-4 transition bg-[#1E2029] border-2 border-dashed border-gray-600 rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none ${
+        className={`flex items-center justify-center w-full h-32 px-4 transition bg-gray-700 border-2 border-dashed border-gray-500 rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none ${
           isDragActive ? "border-blue-500" : ""
         }`}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} accept=".xlsx,.xls,.csv" />
         {isDragActive ? (
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-300">
             Drop the files here ...
           </p>
         ) : (
           <div className="flex flex-col items-center">
             <UploadIcon className="w-8 h-8 text-gray-400" />
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-300">
               Drag & drop files here, or click to select files
             </p>
           </div>
@@ -58,7 +60,7 @@ export function FileUpload({ onUpload }) {
 
       {file && (
         <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-gray-300">
             {file.name}
           </span>
         </div>
@@ -68,7 +70,7 @@ export function FileUpload({ onUpload }) {
         placeholder="Provide context about your contract to help AI negotiate better..."
         value={contractContext}
         onChange={(e) => setContractContext(e.target.value)}
-        className="w-full mt-4 bg-[#1E2029] text-white border-gray-600"
+        className="w-full mt-4 bg-gray-700 text-white border-gray-600"
         rows={4}
       />
 

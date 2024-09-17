@@ -17,16 +17,20 @@ import {
   AlertTriangleIcon,
 } from "lucide-react";
 
-export function ProgressTracker({ contractData }) {
+interface ProgressTrackerProps {
+  contractData: any;
+}
+
+export function ProgressTracker({ contractData }: ProgressTrackerProps) {
   const [progress, setProgress] = useState(0);
   const [vendorFlexibility, setVendorFlexibility] = useState(0);
-  const [flexibilityTrend, setFlexibilityTrend] = useState(null);
+  const [flexibilityTrend, setFlexibilityTrend] = useState<'up' | 'down' | null>(null);
   const [riskLevel, setRiskLevel] = useState("low");
 
   useEffect(() => {
     // Simulating progress calculation based on contract data
     const calculatedProgress = Math.min(
-      100,
+       100,
       Object.keys(contractData).length * 15,
     );
     setProgress(0);
@@ -91,8 +95,8 @@ export function ProgressTracker({ contractData }) {
       transition={{ duration: 0.5 }}
       className="space-y-6"
     >
-      <Card className="overflow-hidden bg-[#2A2D3A]">
-        <CardHeader>
+      <Card className="overflow-hidden bg-[#2A2D3A] text-white">
+        <CardHeader className="text-center">
           <CardTitle
             className="text-xl font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
           >
@@ -119,8 +123,7 @@ export function ProgressTracker({ contractData }) {
             </div>
             <Progress
               value={progress}
-              className="h-2 bg-blue-900"
-              indicatorClassName="bg-gradient-to-r from-blue-500 to-purple-500"
+              className="h-2 bg-blue-900 bg-gradient-to-r from-blue-500 to-purple-500"
             />
           </div>
           <p className="mt-2 text-sm text-gray-300">
@@ -185,8 +188,7 @@ export function ProgressTracker({ contractData }) {
           </div>
           <Progress
             value={vendorFlexibility}
-            className="h-2 bg-gray-700"
-            indicatorClassName="bg-gradient-to-r from-green-500 to-blue-500"
+            className="h-2 bg-gray-700 [&>div]:bg-gradient-to-r [&>div]:from-green-500 [&>div]:to-blue-500"
           />
 
           <p className="mt-2 text-sm text-gray-300">
@@ -222,7 +224,7 @@ export function ProgressTracker({ contractData }) {
               Negotiation Risk Assessment
             </h3>
             <div
-              className={`flex items-center ${riskColors[riskLevel]}`}
+              className={`flex items-center ${riskColors[riskLevel as keyof typeof riskColors]}`}
             >
               <AlertTriangleIcon className="mr-2" />
               <span className="font-bold capitalize">

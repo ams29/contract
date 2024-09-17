@@ -30,9 +30,17 @@ const COLORS = [
   "#82ca9d",
 ];
 
-export function SavingsCharts({ contractData }) {
+interface AnimatedData {
+  discountComparison: any[];
+  competitorComparison: any[];
+  potentialSavings: any[];
+  serviceBreakdown: any[];
+  historicalRates: any[];
+}
+
+export function SavingsCharts({ contractData }: { contractData: any }) {
   const [activeTab, setActiveTab] = useState("discount");
-  const [animatedData, setAnimatedData] = useState({
+  const [animatedData, setAnimatedData] = useState<AnimatedData>({
     discountComparison: [],
     competitorComparison: [],
     potentialSavings: [],
@@ -42,7 +50,7 @@ export function SavingsCharts({ contractData }) {
 
   useEffect(() => {
     const targetData = {
-      discountComparison: contractData.services.map((service) => ({
+      discountComparison: contractData.services.map((service: { type: any; weightRange: any; currentDiscount: string; }) => ({
         name: `${service.type} (${service.weightRange})`,
         current: parseFloat(service.currentDiscount),
         recommended: parseFloat(service.currentDiscount) + 5,
@@ -60,7 +68,7 @@ export function SavingsCharts({ contractData }) {
         { name: "Potential Spend", amount: contractData.totalSpend * 0.9 },
       ],
 
-      serviceBreakdown: contractData.services.map((service, index) => ({
+      serviceBreakdown: contractData.services.map((service: { type: any; weightRange: any; }, index: any) => ({
         name: `${service.type} (${service.weightRange})`,
         value: 100 / contractData.services.length,
       })),
@@ -147,9 +155,9 @@ export function SavingsCharts({ contractData }) {
     return () => clearInterval(interval);
   }, [contractData]);
 
-  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
-  const interpolateArrayData = (prevArray, targetArray, progress) => {
+  const interpolateArrayData = (prevArray: any[], targetArray: any[], progress: number) => {
     if (prevArray.length !== targetArray.length) {
       return targetArray.map((item) => ({ ...item }));
     }
@@ -168,10 +176,10 @@ export function SavingsCharts({ contractData }) {
     });
   };
 
-  const formatPercentage = (value) => `${value.toFixed(2)}%`;
-  const formatCurrency = (value) => `$${value.toLocaleString()}`;
+  const formatPercentage = (value: number) => `${value.toFixed(2)}%`;
+  const formatCurrency = (value: number) => `$${value.toLocaleString()}`;
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload, label }: { active: boolean; payload: any[]; label: string }) => {
     if (active && payload && payload.length) {
       return (
         <div
@@ -194,7 +202,7 @@ export function SavingsCharts({ contractData }) {
       className="space-y-6"
     >
       <Card className="overflow-hidden bg-[#2A2D3A] text-white">
-        <CardHeader>
+        <CardHeader className="text-center">
           <CardTitle
             className="text-2xl font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400"
           >
@@ -225,7 +233,7 @@ export function SavingsCharts({ contractData }) {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="discount">
-              <ChartContainer config={{}} className="h-[400px]">
+              <ChartContainer config={{}} className="h-[400px] mx-auto">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={animatedData.discountComparison}>
                     <CartesianGrid
@@ -238,7 +246,7 @@ export function SavingsCharts({ contractData }) {
                       stroke="#888"
                     />
                     <Tooltip
-                      content={<CustomTooltip />}
+                      content={<CustomTooltip active={false} payload={[]} label="" />}
                     />
                     <Legend />
                     <Bar
@@ -269,7 +277,7 @@ export function SavingsCharts({ contractData }) {
               </p>
             </TabsContent>
             <TabsContent value="competitor">
-              <ChartContainer config={{}} className="h-[400px]">
+              <ChartContainer config={{}} className="h-[400px] mx-auto">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={animatedData.competitorComparison}
@@ -291,7 +299,7 @@ export function SavingsCharts({ contractData }) {
                       stroke="#888"
                     />
                     <Tooltip
-                      content={<CustomTooltip />}
+                      content={<CustomTooltip active={false} payload={[]} label="" />}
                     />
                     <Legend />
                     <Bar
@@ -309,7 +317,7 @@ export function SavingsCharts({ contractData }) {
               </p>
             </TabsContent>
             <TabsContent value="savings">
-              <ChartContainer config={{}} className="h-[400px]">
+              <ChartContainer config={{}} className="h-[400px] mx-auto">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={animatedData.potentialSavings}>
                     <CartesianGrid
@@ -322,7 +330,7 @@ export function SavingsCharts({ contractData }) {
                       stroke="#888"
                     />
                     <Tooltip
-                      content={<CustomTooltip />}
+                      content={<CustomTooltip active={false} payload={[]} label="" />}
                     />
                     <Legend />
                     <Bar dataKey="amount" fill="#82ca9d" />
@@ -337,7 +345,7 @@ export function SavingsCharts({ contractData }) {
               </p>
             </TabsContent>
             <TabsContent value="breakdown">
-              <ChartContainer config={{}} className="h-[400px]">
+              <ChartContainer config={{}} className="h-[400px] mx-auto">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -369,7 +377,7 @@ export function SavingsCharts({ contractData }) {
               </p>
             </TabsContent>
             <TabsContent value="historical">
-              <ChartContainer config={{}} className="h-[400px]">
+              <ChartContainer config={{}} className="h-[400px] mx-auto">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={animatedData.historicalRates}>
                     <CartesianGrid
@@ -378,9 +386,7 @@ export function SavingsCharts({ contractData }) {
                     />
                     <XAxis dataKey="year" stroke="#888" />
                     <YAxis stroke="#888" />
-                    <Tooltip
-                      content={<CustomTooltip />}
-                    />
+                    <Tooltip />
                     <Legend />
                     <Line
                       type="monotone"
