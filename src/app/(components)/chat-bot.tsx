@@ -6,8 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { MessageSquareIcon, SendIcon, XIcon } from "lucide-react";
 
+interface Message {
+  text: string;
+  sender: 'user' | 'ai';
+}
+
 export function ChatBot() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
